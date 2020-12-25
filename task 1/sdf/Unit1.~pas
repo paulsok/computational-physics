@@ -1,0 +1,124 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, TeeProcs, TeEngine, Chart, Grids, StdCtrls, Series;
+
+type
+  TForm1 = class(TForm)
+    StringGrid1: TStringGrid;
+    Chart1: TChart;
+    Button1: TButton;
+    Series1: TLineSeries;
+    Button2: TButton;
+    Edit1: TEdit;
+    Button3: TButton;
+    Series2: TLineSeries;
+    Series3: TLineSeries;
+    Series4: TLineSeries;
+    Series5: TLineSeries;
+    Series6: TLineSeries;
+    Series7: TLineSeries;
+    Series8: TLineSeries;
+    Series9: TLineSeries;
+    Series10: TLineSeries;
+    Series11: TLineSeries;
+    Series12: TLineSeries;
+    Series13: TLineSeries;
+    procedure Dif(deg,k,a,nn:integer;var D:real);
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    function Gorner(xx:real;a,p:integer):real;
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+const
+ N=9;
+var
+  Form1: TForm1;
+  X,Y:array[0..N] of real;
+
+implementation
+
+{$R *.dfm}
+
+
+
+
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+ StringGrid1.cells[0,0]:='X';
+ StringGrid1.cells[1,0]:='Y';
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  i:integer;
+ begin
+  For i:=0 to N do
+   begin
+    X[i]:=strtofloat(stringGrid1.cells[0,i+1]);
+    Y[i]:=strtofloat(stringGrid1.cells[1,i+1]);
+    Series1.AddXY(X[i],Y[i])
+   end;
+ end;
+
+
+procedure TForm1.Dif(deg,k,a,nn:integer;var D:real); {deg=1..N, k=0..N,nn=0..N-k,a=0..N-1}
+ var
+  D1,D2:real;
+ begin
+  If k>0 then
+    Begin
+     D1:=0;
+     D2:=0;
+     Dif(deg,k-1,a,nn,D1);
+     Dif(deg,k-1,a,nn+1,D2);
+     D:=(D2-D1)/(X[a+nn+k]-X[a+nn]);
+    end
+   else  D:=Y[a+nn];
+ end;
+
+
+function TForm1.Gorner(xx:real;a,p:integer):real;
+ var
+  B,Di:real; i:integer;
+ begin
+  dif(p,p,a,0,B);
+  For i:=p-1 downto 0 do
+   begin
+    dif(p,i,a,0,Di);
+    B:=B*(xx-x[a+i])+Di
+   end;
+  Gorner:=B;
+ end;
+
+
+
+
+
+procedure TForm1.Button2Click(Sender: TObject);
+ var h,xx:real;a,t,k,i,p:integer;
+ begin
+  p:=strtoint(edit1.Text);
+  h:=(X[N]-X[0])/100;
+  a:=0;
+  xx:=x[0];
+  For i:=1 to 100 do
+   begin
+    If (xx>=x[a+1]) and (a+p<N) then a:=a+1;
+    chart1.series[p].addxy(xx,gorner(xx,a,p),'',RGB(round(255*p/N),0,0));
+    xx:=x[0]+i*h;
+   end;
+end;
+
+
+
+
+end.
