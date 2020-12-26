@@ -1,0 +1,90 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, TeeProcs, TeEngine, Chart, Grids, StdCtrls, Series;
+
+type
+  TForm1 = class(TForm)
+    StringGrid1: TStringGrid;
+    Chart1: TChart;
+    Series1: TLineSeries;
+    Button1: TButton;
+    Series2: TLineSeries;
+    Button2: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+const
+ N=10;
+var
+  Form1: TForm1;
+  X,Y:array[1..N] of real;
+
+implementation
+
+{$R *.dfm}
+
+
+
+
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+ StringGrid1.cells[0,0]:='X';
+ StringGrid1.cells[1,0]:='Y';
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  i:integer;
+ begin
+  series1.clear;
+  For i:=0 to N-1 do
+   begin
+    X[i+1]:=strtofloat(stringGrid1.cells[0,i+1]);
+    Y[i+1]:=strtofloat(stringGrid1.cells[1,i+1]);
+    Series1.AddXY(X[i],Y[i])
+   end;
+ end;
+
+
+
+
+procedure TForm1.Button2Click(Sender: TObject);
+var i:integer;s1,s2,s3,s4,s5,a,b,h,xx:real;
+begin
+ s1:=0;
+ s2:=0;
+ s3:=0;
+ s4:=0;
+ series2.clear;
+ For i:=1 to N do
+  begin
+   S1:=s1+x[i];
+   s2:=s2+y[i];
+   s3:=s3+x[i]*y[i];
+   s4:=s4+x[i]*x[i];
+  end;
+ S5:=N*s4-s1*s1;
+ a:=(N*S3-s1*s2)/s5;
+ b:=(s2*s4-s1*s3)/s5;
+ h:=(x[N]-x[1])/100;
+ xx:=x[1];
+ For i:=1 to 101 do
+  begin
+   series2.AddXY(xx,a*xx+b);
+   xx:=xx+h;
+  end;
+
+
+end;
+
+end.
